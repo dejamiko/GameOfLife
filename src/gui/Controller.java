@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 
@@ -28,8 +29,8 @@ public class Controller {
     private Game game;
 
     private static int numOfSteps = 0;
-    private static final int WIDTH = 500;
-    private static final int HEIGHT = 500;
+    private static final int WIDTH = 300;
+    private static final int HEIGHT = 300;
 
     /**
      * Initialise gui elements.
@@ -74,6 +75,7 @@ public class Controller {
     private void drawBoard() {
         Canvas canvas = new Canvas(borderPane.getWidth() * 0.9, borderPane.getHeight() * 0.9);
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        graphicsContext.setFill(Paint.valueOf("#C0C8CF"));
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 if (game.isAlive(i, j)) {
@@ -81,7 +83,8 @@ public class Controller {
                     double y = j * borderPane.getHeight() * 0.9 / HEIGHT;
                     double width = borderPane.getWidth() * 0.85 / WIDTH;
                     double height = borderPane.getHeight() * 0.85 / HEIGHT;
-                    graphicsContext.fillPolygon(new double[]{x, x + width, x + width, x}, new double[]{y, y, y + height, y + height}, 4);
+                    graphicsContext.fillPolygon(new double[]{x, x + width, x + width, x},
+                            new double[]{y, y, y + height, y + height}, 4);
                 }
             }
         }

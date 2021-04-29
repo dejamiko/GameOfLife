@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@gameOfLife.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
    <bottom>
       <BorderPane BorderPane.alignment="CENTER">
          <left>
-            <Label fx:id="stepLabel" text="Steps:" BorderPane.alignment="CENTER" />
+            <Label fx:id="stepLabel" text="Steps:" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </BorderPane.margin></Label>
          </left>
          <right>
-            <Label fx:id="aliveLabel" text="Alive:" BorderPane.alignment="CENTER" />
+            <Label fx:id="aliveLabel" text="Alive:" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </BorderPane.margin></Label>
          </right>
       </BorderPane>
    </bottom>
    <right>
       <VBox BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#nextStep" text="Step" />
-            <Button mnemonicParsing="false" onAction="#run" text="Run" />
+            <Button mnemonicParsing="false" onAction="#nextStep" text="Step">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin></Button>
+            <Button mnemonicParsing="false" onAction="#run" text="Run">
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" top="10.0" />
+               </VBox.margin></Button>
          </children>
       </VBox>
    </right>
