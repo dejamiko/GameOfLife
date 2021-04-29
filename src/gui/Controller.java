@@ -2,11 +2,19 @@ package gui;
 
 import Model.Game;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+
+import java.awt.*;
+import java.util.stream.Collectors;
 
 /**
  * The controller class for this application.
@@ -33,9 +41,15 @@ public class Controller {
      */
     @FXML
     private void initialize() {
-        // TODO: add listeners for resizing
-        game = new Game(WIDTH, HEIGHT);
-        drawBoard();
+        game = new Game(WIDTH, HEIGHT, true);
+        Platform.runLater(() -> {
+            Stage stage = ((Stage) borderPane.getScene().getWindow());
+            ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> drawBoard();
+            stage.widthProperty().addListener(stageSizeListener);
+            stage.heightProperty().addListener(stageSizeListener);
+            drawBoard();
+            updateLabels();
+        });
     }
 
     /**
@@ -43,7 +57,7 @@ public class Controller {
      */
     @FXML
     private void run() {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 500; i++) {
             nextStep();
         }
     }
@@ -53,31 +67,30 @@ public class Controller {
      */
     @FXML
     private void nextStep() {
-        new Thread(() -> {
-            game.simulateOneStep();
-            Platform.runLater(() -> {
-                numOfSteps++;
-                drawBoard();
-                updateLabels();
-            });
-        }).start();
+        game.simulateOneStep();
+        numOfSteps++;
+        drawBoard();
+        updateLabels();
     }
 
     /**
-     * Draw the board (circles with radius 1 as alive cells)
-     *
-     * TODO: Make an actual grid for them
+     * Draw the board (squares 1x1 as alive cells)
      */
     private void drawBoard() {
-        Group group = new Group();
+        Canvas canvas = new Canvas(borderPane.getWidth() * 0.9, borderPane.getHeight() * 0.9);
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
-                if (game.isAlive(i, j))
-                    // coordinates x, coordinates y, radius
-                    group.getChildren().add(new Circle(i - WIDTH / 2.0, -(j - HEIGHT / 2.0), 1));
+                if (game.isAlive(i, j)) {
+                    double x = i * borderPane.getWidth() * 0.9 / WIDTH;
+                    double y = j * borderPane.getHeight() * 0.9 / HEIGHT;
+                    double width = borderPane.getWidth() * 0.85 / WIDTH;
+                    double height = borderPane.getHeight() * 0.85 / HEIGHT;
+                    graphicsContext.fillPolygon(new double[]{x, x + width, x + width, x}, new double[]{y, y, y + height, y + height}, 4);
+                }
             }
         }
-        borderPane.setCenter(group);
+        borderPane.setCenter(canvas);
     }
 
     /**

@@ -1,5 +1,6 @@
 package Model;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -18,9 +19,10 @@ public class Game {
      * @param rows The number of rows.
      * @param cols The number of columns.
      */
-    public Game(int rows, int cols) {
+    public Game(int rows, int cols, boolean randomise) {
         current = new boolean[rows][cols];
-        populateGame();
+        if (randomise)
+            populateGame();
     }
 
     /**
@@ -32,7 +34,6 @@ public class Game {
         for (int i = 0; i < current.length; i++) {
             for (int j = 0; j < current[i].length; j++) {
                 current[i][j] = random.nextDouble() < probability;
-
             }
         }
     }
@@ -42,8 +43,8 @@ public class Game {
      */
     public void simulateOneStep() {
         boolean[][] nextTurn = new boolean[current.length][current[0].length];
-        for (boolean[] booleans : current) {
-            System.arraycopy(current, 0, nextTurn, 0, booleans.length);
+        for (int i = 0; i < current.length; i++) {
+            nextTurn[i] = Arrays.copyOf(current[i], current[i].length);
         }
 
         for (int i = 0; i < nextTurn.length; i++) {
@@ -53,10 +54,9 @@ public class Game {
                 nextTurn[i][j] = (current[i][j] && (n == 2 || n == 3)) || (!current[i][j] && n == 3);
             }
         }
-        for (boolean[] booleans : current) {
-            System.arraycopy(nextTurn, 0, current, 0, booleans.length);
+        for (int i = 0; i < current.length; i++) {
+            current[i] = Arrays.copyOf(nextTurn[i], current[i].length);
         }
-        System.out.println(getNumOfCells());
     }
 
     /**
@@ -68,29 +68,30 @@ public class Game {
      */
     private int getNumOfNeighbours(int row, int col) {
         int num = 0;
+        // Make the board loop onto itself
+        int rowBelow = (row - 1 + current.length) % current.length;
+        int rowAbove = (row + 1 + current.length) % current.length;
+        int colLeft = (col - 1 + current[row].length) % current[row].length;
+        int colRight = (col + 1 + current[row].length) % current[row].length;
         // Check row "above"
-        if (row > 0) {
-            if (col > 0 && current[row - 1][col - 1])
-                num++;
-            if (current[row - 1][col])
-                num++;
-            if (col + 1< current[row].length && current[row - 1][col + 1])
-                num++;
-        }
-        // Check same row
-        if (col > 0 && current[row][col - 1])
+        if (current[rowBelow][colLeft])
             num++;
-        if (col + 1 < current[row].length && current[row][col + 1])
+        if (current[rowBelow][col])
+            num++;
+        if (current[rowBelow][colRight])
+            num++;
+        // Check same row
+        if (current[row][colLeft])
+            num++;
+        if (current[row][colRight])
             num++;
         // Check row "below"
-        if (row + 1 < current.length) {
-            if (col > 0 && current[row + 1][col - 1])
-                num++;
-            if (current[row + 1][col])
-                num++;
-            if (col + 1 < current[row].length && current[row + 1][col + 1])
-                num++;
-        }
+        if (current[rowAbove][colLeft])
+            num++;
+        if (current[rowAbove][col])
+            num++;
+        if (current[rowAbove][colRight])
+            num++;
 
         return num;
     }
