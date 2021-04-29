@@ -5,11 +5,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
-   <top>
-      <Label text="Game of life" BorderPane.alignment="CENTER" />
-   </top>
    <bottom>
       <BorderPane BorderPane.alignment="CENTER">
          <left>

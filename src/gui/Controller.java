@@ -4,17 +4,12 @@ import Model.Game;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.util.stream.Collectors;
 
 /**
  * The controller class for this application.
@@ -33,8 +28,8 @@ public class Controller {
     private Game game;
 
     private static int numOfSteps = 0;
-    private static final int WIDTH = 100;
-    private static final int HEIGHT = 100;
+    private static final int WIDTH = 500;
+    private static final int HEIGHT = 500;
 
     /**
      * Initialise gui elements.
