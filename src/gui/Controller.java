@@ -1,6 +1,9 @@
 package gui;
 
 import Model.Game;
+import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -10,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 
 /**
@@ -26,8 +30,8 @@ public class Controller {
     @FXML
     private Label aliveLabel;
 
+    private Stage stage;
     private Game game;
-
     private static int numOfSteps = 0;
     private static final int WIDTH = 300;
     private static final int HEIGHT = 300;
@@ -39,7 +43,7 @@ public class Controller {
     private void initialize() {
         game = new Game(WIDTH, HEIGHT, true);
         Platform.runLater(() -> {
-            Stage stage = ((Stage) borderPane.getScene().getWindow());
+            stage = ((Stage) borderPane.getScene().getWindow());
             ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> drawBoard();
             stage.widthProperty().addListener(stageSizeListener);
             stage.heightProperty().addListener(stageSizeListener);
@@ -53,9 +57,8 @@ public class Controller {
      */
     @FXML
     private void run() {
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 500; i++)
             nextStep();
-        }
     }
 
     /**
@@ -100,5 +103,3 @@ public class Controller {
     }
 }
 // TODO: see why the gui doesn't refresh every step upon calling run
-
-// TODO: optimise this bad boi, it's crazily slow now (maybe some multithread graphics stuff?) google it
