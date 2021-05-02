@@ -1,11 +1,9 @@
 package gui;
 
 import Model.Game;
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 
 /**
@@ -32,8 +29,9 @@ public class Controller {
 
     private Stage stage;
     private Game game;
+    private boolean running;
     private static int numOfSteps = 0;
-    private static final int WIDTH = 300;
+    private static final int WIDTH = 500;
     private static final int HEIGHT = 300;
 
     /**
@@ -53,12 +51,16 @@ public class Controller {
     }
 
     /**
-     * Run the simulation for some number of steps.
+     * Run the simulation for an indefinite number of steps.
      */
     @FXML
     private void run() {
-        for (int i = 0; i < 500; i++)
-            nextStep();
+        if (!running) {
+            running = true;
+            Thread thread = new Thread(new GameTask());
+            thread.setDaemon(true);
+            thread.start();
+        }
     }
 
     /**
@@ -66,10 +68,33 @@ public class Controller {
      */
     @FXML
     private void nextStep() {
-        game.simulateOneStep();
-        numOfSteps++;
+        new Thread(() -> {
+            game.simulateOneStep();
+            Platform.runLater(() -> {
+                numOfSteps++;
+                drawBoard();
+                updateLabels();
+            });
+        }).start();
+    }
+
+    /**
+     * Restart the game.
+     */
+    @FXML
+    private void restart() {
+        game = new Game(WIDTH, HEIGHT, true);
+        stop();
         drawBoard();
         updateLabels();
+    }
+
+    /**
+     * Stop running the game.
+     */
+    @FXML
+    private void stop() {
+        running = false;
     }
 
     /**
@@ -101,5 +126,30 @@ public class Controller {
         stepLabel.setText("Steps: " + numOfSteps);
         aliveLabel.setText("Alive: " + game.getNumOfCells());
     }
+
+    /**
+     * A nested class for the game task.
+     *
+     * @author mikolajdeja
+     * @version 2021.05.02
+     */
+    class GameTask extends Task<Void> {
+        /**
+         * As long as running is true, call next steps.
+         *
+         * @return null
+         */
+        @Override
+        protected Void call() {
+            while (running) {
+                nextStep();
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    System.out.println("The task was interrupted");
+                }
+            }
+            return null;
+        }
+    }
 }
-// TODO: see why the gui doesn't refresh every step upon calling run
