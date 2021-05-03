@@ -30,9 +30,10 @@ public class Controller {
     private Stage stage;
     private Game game;
     private boolean running;
-    private static int numOfSteps = 0;
-    private static final int WIDTH = 500;
-    private static final int HEIGHT = 300;
+    private static int numOfSteps;
+    private static final int delay = 50;
+    private static final int WIDTH = 100;
+    private static final int HEIGHT = 100;
 
     /**
      * Initialise gui elements.
@@ -40,6 +41,7 @@ public class Controller {
     @FXML
     private void initialize() {
         game = new Game(WIDTH, HEIGHT, true);
+        numOfSteps = 0;
         Platform.runLater(() -> {
             stage = ((Stage) borderPane.getScene().getWindow());
             ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> drawBoard();
@@ -84,6 +86,7 @@ public class Controller {
     @FXML
     private void restart() {
         game = new Game(WIDTH, HEIGHT, true);
+        numOfSteps = 0;
         stop();
         drawBoard();
         updateLabels();
@@ -144,7 +147,7 @@ public class Controller {
             while (running) {
                 nextStep();
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(delay);
                 } catch (InterruptedException e) {
                     System.out.println("The task was interrupted");
                 }
